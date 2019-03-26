@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="500.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lipoas.kursovoy.UI.MainController">
+   <children>
+      <SplitPane dividerPositions="0.38847117794486213" prefHeight="500.0" prefWidth="800.0">
+        <items>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+               <children>
+                  <Label layoutX="75.0" layoutY="14.0" prefHeight="30.0" prefWidth="158.0" text="Ковш непрерывного литья" />
+               </children>
+            </AnchorPane>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+               <children>
+                  <TableView fx:id="refractoryTableView" layoutX="14.0" layoutY="14.0" prefHeight="362.0" prefWidth="454.0">
+                     <columns>
+                        <TableColumn fx:id="nameTableColumn" prefWidth="92.0" text="Название" />
+                        <TableColumn fx:id="densityTableColumn" prefWidth="82.0" text="Плотность" />
+                        <TableColumn fx:id="thermalTableColumn" prefWidth="88.0" text="Теплопроводность" />
+                        <TableColumn fx:id="useTableColumn" prefWidth="96.0" text="Использование" />
+                        <TableColumn fx:id="zoneTableColumn" prefWidth="77.0" text="Зона" />
+                     </columns></TableView>
+                  <Button layoutX="14.0" layoutY="454.0" mnemonicParsing="false" onAction="#onClickAdd" prefHeight="30.0" prefWidth="109.0" text="Добавить запись" />
+                  <Button layoutX="362.0" layoutY="454.0" mnemonicParsing="false" onAction="#onClickDelete" prefHeight="30.0" prefWidth="109.0" text="Удалить запись" />
+                  <Button layoutX="188.0" layoutY="454.0" mnemonicParsing="false" onAction="#onClickShowAll" prefHeight="30.0" prefWidth="109.0" text="Показать все" />
+               </children>
+            </AnchorPane>
+        </items>
+      </SplitPane>
+   </children>
+</AnchorPane>
