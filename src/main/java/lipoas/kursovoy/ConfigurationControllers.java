@@ -2,13 +2,10 @@ package lipoas.kursovoy;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
-import javafx.stage.Stage;
 import lipoas.kursovoy.UI.AddRefractoryController;
 import lipoas.kursovoy.UI.MainController;
-import lipoas.kursovoy.UI.RootLayoutController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,18 +15,24 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Objects;
 
 @Configuration
 class ConfigurationControllers {
+
     @Autowired
     private Environment env;
+    private AnchorPane mainLayout;
+    private BorderPane rootLayout;
 
-    private Stage primaryStage;
-    private AnchorPane rootLayout;
+    /*@Bean(name = "mainView")
+    public View getMainView() throws IOException {
+        return loadView("View/Main.fxml");
+    }*/
 
     @Bean(name = "mainView")
     public View getMainView() throws IOException {
-        return loadView("View/Main.fxml");
+        return loadViewWithRoot("View/RootLayout.fxml", "View/Main.fxml");
     }
 
     @Bean(name = "addView")
@@ -40,7 +43,7 @@ class ConfigurationControllers {
     @Bean
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName(env.getProperty("spring.datasource.driver-class-name"));
+        dataSource.setDriverClassName(Objects.requireNonNull(env.getProperty("spring.datasource.driver-class-name")));
         dataSource.setUrl(env.getProperty("spring.datasource.url"));
         dataSource.setUsername(env.getProperty("spring.datasource.username"));
         dataSource.setPassword(env.getProperty("spring.datasource.password"));
@@ -74,8 +77,28 @@ class ConfigurationControllers {
             FXMLLoader loader = new FXMLLoader();
             InputStream fxmlStream = null;
             fxmlStream = getClass().getClassLoader().getResourceAsStream(url);
-            rootLayout = (AnchorPane) loader.load(fxmlStream);
+            mainLayout = loader.load(fxmlStream);
             return new View(loader.getRoot(), loader.getController());
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public View loadViewWithRoot(String urlRoot, String urlSecondary) throws IOException {
+
+        try {
+            FXMLLoader rootLoader = new FXMLLoader();
+            FXMLLoader mainLoader = new FXMLLoader();
+            InputStream fxmlStream = null;
+            fxmlStream = getClass().getClassLoader().getResourceAsStream(urlRoot);
+            rootLayout = rootLoader.load(fxmlStream);
+
+            fxmlStream = getClass().getClassLoader().getResourceAsStream(urlSecondary);
+            mainLayout = mainLoader.load(fxmlStream);
+            rootLayout.setCenter(mainLayout);
+
+            return new View(rootLoader.getRoot(), rootLoader.getController(), mainLoader.getController());
         } catch (IOException e) {
             e.printStackTrace();
             return null;
@@ -88,11 +111,18 @@ class ConfigurationControllers {
      */
     public class View {
         private Parent view;
-        private Object controller;
+        private Object mainController;
+        private Object rootController;
 
-        public View(Parent view, Object controller) {
+        public View(Parent view, Object mainController) {
             this.view = view;
-            this.controller = controller;
+            this.mainController = mainController;
+        }
+
+        public View(Parent view, Object rootController, Object mainController) {
+            this.view = view;
+            this.mainController = mainController;
+            this.rootController = rootController;
         }
 
         public Parent getView() {
@@ -104,11 +134,19 @@ class ConfigurationControllers {
         }
 
         public Object getController() {
-            return controller;
+            return mainController;
         }
 
         public void setController(Object controller) {
-            this.controller = controller;
+            this.mainController = controller;
+        }
+
+        public Object getRootController() {
+            return rootController;
+        }
+
+        public void setRootController(Object rootController) {
+            this.rootController = rootController;
         }
     }
 

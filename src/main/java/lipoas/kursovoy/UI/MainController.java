@@ -5,16 +5,13 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import jdk.internal.dynalink.linker.LinkerServices;
 import lipoas.kursovoy.Application;
 import lipoas.kursovoy.Entity.Refractory;
 import lipoas.kursovoy.Entity.RefractoryDto;
 import lipoas.kursovoy.Service.RefractoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
 
 public class MainController {
 
@@ -46,7 +43,7 @@ public class MainController {
 
         */
 
-
+        //parser(refractoryService.findAll(), listRefractory);
 
     }
 
@@ -56,7 +53,8 @@ public class MainController {
         //System.out.println(list.get(0).getName());
     }
 
-    private void parser(List<Refractory> list) {
+    private void parser(List<Refractory> list, ObservableList<RefractoryDto> obsList) {
+        obsList.clear();
         for (Refractory refractory : list) {
             RefractoryDto element = new RefractoryDto();
             element.setName(refractory.getName());
@@ -65,12 +63,12 @@ public class MainController {
             element.setThermal_conductivity(refractory.getThermal_conductivity());
             element.setType_of_use(refractory.getType_of_use());
             element.setZone_of_ladle(refractory.getZone_of_ladle());
-            this.listRefractory.add(element);
+            obsList.add(element);
         }
     }
 
     public void onClickShowAll(ActionEvent actionEvent) {
-        parser(refractoryService.findAll());
+        parser(refractoryService.findAll(), listRefractory);
     }
 
     public void onClickDelete(ActionEvent actionEvent) {

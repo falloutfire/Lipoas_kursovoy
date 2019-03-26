@@ -22,14 +22,12 @@ public class Application extends AbstractJavaFxApplicationSupport {
     @Value("${ui.title:JavaFX приложение}")//
     private String windowTitle;
 
-    @Qualifier("mainView")
-    @Autowired
-    private ConfigurationControllers.View viewMain;
-
     MainController mainController = null;
-
-    @Qualifier("addView")
     @Autowired
+    @Qualifier("mainView")
+    private ConfigurationControllers.View viewMain;
+    @Autowired
+    @Qualifier("addView")
     private ConfigurationControllers.View viewAdd;
 
     public static void main(String[] args) {

@@ -15,6 +15,7 @@ public class RootLayoutController {
     }
 
     public void handleClose(ActionEvent actionEvent) {
+        System.exit(0);
     }
 
     public void handleAbout(ActionEvent actionEvent) {
