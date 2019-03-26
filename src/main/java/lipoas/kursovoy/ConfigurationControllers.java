@@ -6,6 +6,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import lipoas.kursovoy.UI.AddRefractoryController;
 import lipoas.kursovoy.UI.MainController;
+import lipoas.kursovoy.UI.RootLayoutController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,26 +21,51 @@ import java.util.Objects;
 @Configuration
 class ConfigurationControllers {
 
+    /**
+     * Autowired аннотация нужна для того, что бы спринг самостоятельно нашел
+     * нужный bean и подставил его в наеш свойство/поле
+     */
     @Autowired
     private Environment env;
     private AnchorPane mainLayout;
     private BorderPane rootLayout;
 
+    /**
+     * Аннотация Bean озночает, что это обычный объект, только он будет помещен в DI-контейнер Spring
+     * Вообще все объекты в Spring - бины
+     * DI-контейнер - хранилище бинов, которые их связывает. Служит для настройки зависимостей
+     */
+
+    /**
+     * Создаем объект View для Root и Main Layout и отправляем его DI-контейнер
+     * @return View
+     * @throws IOException
+     */
     /*@Bean(name = "mainView")
     public View getMainView() throws IOException {
         return loadView("View/Main.fxml");
     }*/
-
     @Bean(name = "mainView")
     public View getMainView() throws IOException {
         return loadViewWithRoot("View/RootLayout.fxml", "View/Main.fxml");
     }
 
+    /**
+     * Создаем объект View для Add layout и отправляем его DI-контейнер
+     * @return View
+     * @throws IOException
+     */
     @Bean(name = "addView")
     public View getRefractoryView() throws IOException {
         return loadView("View/AddRefractoryLayout.fxml");
     }
 
+    /**
+     * Создаем объект DataSource для работы с базой данных, указываем наеш подключение и настройки для него,
+     * и отправляем его DI-контейнер
+     * @return View
+     * @throws IOException
+     */
     @Bean
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
@@ -48,17 +74,23 @@ class ConfigurationControllers {
         dataSource.setUsername(env.getProperty("spring.datasource.username"));
         dataSource.setPassword(env.getProperty("spring.datasource.password"));
 
+        //TODO: Delete println in master
         System.out.println("## DataSource1: " + dataSource);
         return dataSource;
     }
 
     /**
      * Именно благодаря этому методу мы добавили контроллер в контекст спринга,
-     * и заставили его произвести все необходимые инъекции.
+     * и заставили его произвести все необходимые инъекции
      */
     @Bean
-    public MainController getMainController() throws IOException {
+    public MainController getMainLayoutController() throws IOException {
         return (MainController) getMainView().getController();
+    }
+
+    @Bean
+    public RootLayoutController getRootLayoutController() throws IOException {
+        return (RootLayoutController) getMainView().getRootController();
     }
 
     @Bean
@@ -85,6 +117,14 @@ class ConfigurationControllers {
         }
     }
 
+    /**
+     * Тотже способ использования FXML загрузчика, но здесь мы создаем и инициализируем
+     * два контроллера Root и Main
+     * @param urlRoot
+     * @param urlSecondary
+     * @return
+     * @throws IOException
+     */
     public View loadViewWithRoot(String urlRoot, String urlSecondary) throws IOException {
 
         try {
@@ -119,6 +159,13 @@ class ConfigurationControllers {
             this.mainController = mainController;
         }
 
+        /**
+         * Дополнительный конструктор: возвращает два контроллера, вместо одного
+         * Для Root и Main Layout
+         * @param view
+         * @param rootController
+         * @param mainController
+         */
         public View(Parent view, Object rootController, Object mainController) {
             this.view = view;
             this.mainController = mainController;

@@ -31,6 +31,11 @@ public class MainController {
 
 
     public void initialize(){
+        /**
+         * тут магия конечно, но если примерно, setCellValueFactory() - метод, который указывает
+         * какие данные будут ОТОБРАЖАТЬСЯ в ячейках определенного столбца в таблице
+         */
+        System.out.println(this);
         nameTableColumn.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
         densityTableColumn.setCellValueFactory(cellData -> cellData.getValue().densityProperty().asObject());
         thermalTableColumn.setCellValueFactory(cellData -> cellData.getValue().thermal_conductivityProperty().asObject());
@@ -76,5 +81,7 @@ public class MainController {
 
     public void setApp(Application app) {
         this.app = app;
+        System.out.println("test");
+        System.out.println(this);
     }
 }
